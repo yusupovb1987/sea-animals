@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sea Life App</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background: linear-gradient(135deg,#dff6ff,#f5fbff);
+}
+
+/* MAIN */
+.container{
+    display:flex;
+}
+
+/* LEFT SIDEBAR */
+.content{
+    width:320px;
+    height:100vh;
+    background:white;
+    padding:20px;
+    box-shadow:5px 0 20px rgba(0,0,0,0.1);
+    overflow:auto;
+}
+
+.img{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    border:3px solid #00aaff;
+    display:block;
+    margin:10px auto;
+}
+
+h1{
+    text-align:center;
+    font-size:20px;
+}
+
+h3{
+    font-size:14px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+/* RIGHT SIDE */
+.website{
+    flex:1;
+    padding:30px;
+}
+
+.h1{
+    text-align:center;
+    font-size:50px;
+    color:#0077be;
+}
+
+.salom{
+    width:100%;
+    max-width:900px;
+    border-radius:15px;
+    display:block;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* INPUT */
+#animalInput{
+    width:60%;
+    padding:15px;
+    font-size:18px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    margin:20px auto;
+    display:block;
+}
+button{
+    display:block;
+    margin:10px auto;
+    padding:12px 30px;
+    border:none;
+    border-radius:10px;
+    background:#00aaff;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#0077be;
+}
+#resultTitle{
+    text-align:center;
+    font-size:30px;
+    color:#0077be;
+    margin-top:30px;
+}
+
+#resultText{
+    width:70%;
+    margin:20px auto;
+    padding:25px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    line-height:1.8;
+    border-left:6px solid #00aaff;
+}
+
+#resultImg{
+    width:300px;
+    display:block;
+    margin:20px auto;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<div class="content">
+
+<h1>About me</h1>
+
+<img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..." class="img">
+
+<h3>👤 Name: Fazliddin</h3>
+<h3>👤 Surename: Eshmamatov</h3>
+<h3>🎂 Age: 13 years old</h3>
+<h3>🚹 Gender: Male</h3>
+<h3>🏠 City: Surkhandarya</h3>
+<h3>🇺🇿 Country: Uzbekistan</h3>
+
+</div>
+<div class="website">
+
+<h1 class="h1">SeaLife 🌊</h1>
+
+<img class="salom" src="https://cdn.prod.website-files.com/621f789c295b777169edc867/621f996383d8c45c7b8d1d73_Sea-Life-Collection-Header.jpg">
+
+<input id="animalInput" placeholder="Enter animal name...">
+<button onclick="searchAnimal()">Search</button>
+
+<h2 id="resultTitle"></h2>
+<img id="resultImg" style="display:none;">
+<p id="resultText"></p>
+
+</div>
+
+</div>
+
+<script>
+const database = {
+  shark: {
+    text: `
+Sharks are powerful ocean predators.
+They have existed for over 400 million years.
+They help keep the ocean ecosystem balanced.
+Most sharks are not dangerous to humans.
+    `,
+    img: "https://en.wikipedia.org/wiki/File:Southern_right_whale.jpg"
+  },
+
+  whale: {
+    text: `
+Whales are the largest animals on Earth.
+They are marine mammals that breathe air.
+They communicate using whale songs.
+They travel long distances across oceans.
+    `,
+    img: "https://www.google.com/imgres?q=sealife%20animals%20images&imgurl=https%3A%2F%2Fcdn.firstcry.com%2Feducation%2F2022%2F04%2F10105949%2F1579327687.jpg&imgrefurl=https%3A%2F%2Fwww.firstcry.com%2Fintelli%2Farticles%2Fsea-animals-for-kids-teach-your-child-about-ocean-animals%2F%3Fsrsltid%3DAfmBOoqmbRKEAKouLB138Xn3abLBnSHIkGYo4yJLfZImVZD42yNtDUBo&docid=1T-dZJuRpfB3OM&tbnid=XOAo-If-ejqI3M&vet=12ahUKEwiXsMuU_5eUAxUARPEDHd1wObYQnPAOegQIMBAA..i&w=1024&h=700&hcb=2&ved=2ahUKEwiXsMuU_5eUAxUARPEDHd1wObYQnPAOegQIMBAA"
+  },
+
+  dolphin: {
+    text: `
+Dolphins are intelligent and friendly marine mammals.
+They live in groups called pods.
+They use echolocation to find food.
+They are very social and playful.
+    `,
+    img: "https://www.nps.gov/chis/learn/nature/marine-animals.htm"
+  },
+
+  jellyfish: {
+    text: `
+Jellyfish are soft sea creatures made mostly of water.
+They have no brain or bones.
+They use tentacles to catch food.
+Some glow in the dark ocean.
+    `,
+    img: "https://upload.wikimedia.org/wikipedia/commons/4/44/Jelly_cc11.jpg"
+  },
+
+  octopus: {
+    text: `
+Octopuses are very intelligent sea animals.
+They have 8 arms with suction cups.
+They can change color quickly.
+They are great at escaping danger.
+    `,
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Octopus2.jpg"
+  },
+
+  turtle: {
+    text: `
+Sea turtles are ancient marine reptiles.
+They travel thousands of kilometers.
+They return to same beaches to lay eggs.
+They can live for many years.
+    `,
+    img: "https://hawaiiecodivers.com/blog/exploring-the-wonders-of-hawaiian-waters-5-marine-animals-you-may-encounter-while-scuba-diving/"
+  },
+
+  crab: {
+    text: `
+Crabs are sea creatures with hard shells.
+They walk sideways.
+They use claws for defense.
+They live in oceans and beaches.
+    `,
+    img: "https://animals.howstuffworks.com/marine-life/crustaceans.htm"
+  },
+
+  seahorse: {
+    text: `
+Seahorses are unique fish with horse-like heads.
+Males carry babies in a pouch.
+They swim very slowly.
+They hold onto plants with tails.
+    `,
+    img: "https://in.pinterest.com/pin/418482990396317744/"
+  },
+
+  starfish: {
+    text: `
+Starfish live on the ocean floor.
+They can regrow lost arms.
+They eat small sea animals.
+They move very slowly.
+    `,
+    img: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Starfish_blue.jpg"
+  },
+
+  stingray: {
+    text: `
+Stingrays are flat ocean animals.
+They glide on sea floors.
+They use tails for defense.
+They are mostly peaceful.
+    `,
+    img: "https://upload.wikimedia.org/wikipedia/commons/3/37/Stingray.jpg"
+  }
+};
+
+function searchAnimal(){
+  let input = document.getElementById("animalInput").value.toLowerCase();
+
+  let title = document.getElementById("resultTitle");
+  let text = document.getElementById("resultText");
+  let img = document.getElementById("resultImg");
+
+  if(database[input]){
+    title.innerText = input.toUpperCase();
+    text.innerText = database[input].text;
+    img.src = database[input].img;
+    img.style.display = "block";
+  } else {
+    title.innerText = "Not Found ❌";
+    text.innerText = "Try: shark, whale, jellyfish, dolphin, octopus";
+    img.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
