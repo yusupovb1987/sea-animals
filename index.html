@@ -1,267 +1,656 @@
- <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Sea Life App</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-body{
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    /* ocean palette */
+    --deep-1:#03181f;
+    --deep-2:#04283a;
+    --deep-3:#0b4d63;
+    --mid-4:#0d6e8c;
+    --bio-cyan:#4fe3d1;
+    --foam:#eaf9fb;
+    --coral:#ff6b6b;
+    --card-glass: rgba(255,255,255,0.10);
+    --border-glass: rgba(255,255,255,0.28);
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --shadow-soft: 0 20px 45px rgba(3,24,31,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
     margin:0;
-   font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg,#84c99b,#aecadd);
-}
+    min-height:100vh;
+    font-family:'Poppins', sans-serif;
+    color:var(--foam);
+    background:
+      radial-gradient(circle at 15% 10%, rgba(79,227,209,0.18), transparent 45%),
+      linear-gradient(160deg, var(--deep-1) 0%, var(--deep-2) 45%, var(--deep-3) 100%);
+    background-size:100% 100%, 220% 220%;
+    background-attachment:fixed;
+    transition: background-color 0.7s ease, color 0.7s ease;
+    animation: oceanDrift 18s ease-in-out infinite;
+    position:relative;
+    overflow-x:hidden;
+  }
 
-/* MAIN */
-.container{
-    display:flex;
-}
+  body.day{
+    color:#04283a;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,255,255,0.35), transparent 45%),
+      linear-gradient(160deg, #7ec8e3 0%, #9fdff0 45%, #ffe4a1 100%);
+    background-size:100% 100%, 220% 220%;
+  }
 
-/* LEFT SIDEBAR */
-.content{
-    background: var(--card-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  height: fit-content;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
-  width: 300px;
-  height: 600px;
-  padding: 10px;
-  margin-top: 100px;
-}
-.content-header{
-   position: relative;
-  background: linear-gradient(135deg, var(--mid-4), var(--deep-3) 75%);
-  padding: 22px 24px 16px;
-}
-.content-eyebrow{
-   font-family:'Space Mono', monospace;
-  font-size: 0.66rem; letter-spacing: 2.5px;
-  color: var(--bio-cyan); text-transform: uppercase;
-}
-.img{
-    width:110px;
-    height:110px;
-    border-radius:50%;
-    border:3px solid #00aaff;
-    display:inline;
-   margin-left: 70px;
-}
+  @keyframes oceanDrift{
+    0%   { background-position: 0 0, 0% 50%; }
+    50%  { background-position: 0 0, 100% 50%; }
+    100% { background-position: 0 0, 0% 50%; }
+  }
 
-h1{
-    text-align:center;
-    font-size:45px;
-}
+  /* ===== RISING BUBBLES (whole page, parallax) ===== */
+  @keyframes bubbleRiseA{
+    0%   { background-position: 0 0, 40px 30px, 90px 70px, 140px 10px; }
+    100% { background-position: 0 -420px, 40px -390px, 90px -350px, 140px -410px; }
+  }
+  @keyframes bubbleRiseB{
+    0%   { background-position: 20px 0, 110px 40px, 170px 90px; }
+    100% { background-position: 20px -520px, 110px -480px, 170px -530px; }
+  }
 
-h3{
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background-repeat:repeat-y;
+    background-image:
+      radial-gradient(4px 4px at 20px 30px, rgba(255,255,255,0.45), transparent 70%),
+      radial-gradient(3px 3px at 90px 70px, rgba(255,255,255,0.35), transparent 70%),
+      radial-gradient(5px 5px at 150px 20px, rgba(255,255,255,0.3), transparent 70%),
+      radial-gradient(2px 2px at 200px 60px, rgba(255,255,255,0.4), transparent 70%);
+    background-size:220px 420px;
+    animation: bubbleRiseA 14s linear infinite;
+    opacity:0.55;
+  }
+
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background-repeat:repeat-y;
+    background-image:
+      radial-gradient(6px 6px at 60px 50px, rgba(79,227,209,0.35), transparent 70%),
+      radial-gradient(3px 3px at 160px 90px, rgba(255,255,255,0.3), transparent 70%),
+      radial-gradient(4px 4px at 260px 30px, rgba(255,255,255,0.25), transparent 70%);
+    background-size:320px 520px;
+    animation: bubbleRiseB 22s linear infinite;
+    opacity:0.45;
+  }
+
+  body.day::before, body.day::after{ opacity:0.35; }
+
+  /* ===== SWIMMING FISH (school made from existing h3 tags, no HTML added) ===== */
+  @keyframes swimRight{
+    0%   { left:-8%; }
+    100% { left:108%; }
+  }
+  @keyframes swimLeft{
+    0%   { left:108%; }
+    100% { left:-8%; }
+  }
+
+  .content h3{ position:relative; }
+
+  .content h3::after{
+    content:"🐟";
+    position:fixed;
+    pointer-events:none;
+    z-index:0;
+    font-size:22px;
+    opacity:0.55;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  }
+
+  .content h3:nth-child(3)::after{
+    content:"🐠";
+    top:18%;
+    animation: swimRight 26s linear infinite;
+    animation-delay:-2s;
+  }
+  .content h3:nth-child(4)::after{
+    content:"🐟";
+    top:38%;
+    font-size:16px;
+    opacity:0.4;
+    transform:scaleX(-1);
+    animation: swimLeft 19s linear infinite;
+    animation-delay:-6s;
+  }
+  .content h3:nth-child(5)::after{
+    content:"🐡";
+    top:62%;
+    animation: swimRight 32s linear infinite;
+    animation-delay:-14s;
+  }
+  .content h3:nth-child(6)::after{
+    content:"🐠";
+    top:80%;
+    font-size:18px;
+    opacity:0.45;
+    transform:scaleX(-1);
+    animation: swimLeft 23s linear infinite;
+    animation-delay:-4s;
+  }
+  .content h3:nth-child(2)::after{
+    content:"🐟";
+    top:52%;
+    font-size:14px;
+    opacity:0.35;
+    animation: swimRight 21s linear infinite;
+    animation-delay:-10s;
+  }
+
+  /* ===== ROCKY REEF (fixed to viewport bottom, behind the cards) ===== */
+  .container::before{
+    content:"";
+    position:fixed;
+    left:0; right:0; bottom:0;
+    height:150px;
+    z-index:0;
+    pointer-events:none;
+    background:linear-gradient(160deg,#0c3a46,#08262f 70%);
+    opacity:0.85;
+    clip-path:polygon(
+      0% 100%, 0% 62%, 6% 78%, 13% 42%, 21% 68%, 29% 30%,
+      38% 60%, 47% 20%, 56% 52%, 65% 34%, 73% 58%,
+      82% 24%, 90% 50%, 96% 30%, 100% 55%, 100% 100%
+    );
+  }
+  .container::after{
+    content:"";
+    position:fixed;
+    left:0; right:0; bottom:0;
+    height:90px;
+    z-index:0;
+    pointer-events:none;
+    background:linear-gradient(160deg,#124a58,#0c3a46 70%);
+    opacity:0.6;
+    clip-path:polygon(
+      0% 100%, 0% 75%, 10% 90%, 18% 55%, 27% 82%, 36% 45%,
+      45% 78%, 55% 40%, 64% 72%, 74% 48%, 83% 80%,
+      92% 42%, 100% 70%, 100% 100%
+    );
+  }
+
+  /* ===== SWAYING SEAWEED ===== */
+  @keyframes sway{
+    0%, 100% { transform:rotate(-7deg); }
+    50%      { transform:rotate(7deg); }
+  }
+
+  .content::before,
+  .content::after,
+  .website::before,
+  .website::after,
+  #resultTitle::before,
+  #resultText::before{
+    content:"";
+    position:fixed;
+    bottom:0;
+    width:16px;
+    z-index:0;
+    pointer-events:none;
+    transform-origin:bottom center;
+    border-radius:50% 50% 10% 10% / 70% 70% 10% 10%;
+    animation:sway 4.5s ease-in-out infinite;
+  }
+  .content::before{
+    left:3%; height:95px;
+    background:linear-gradient(180deg,#1f9d6b,#0f5132);
+    animation-duration:5s;
+  }
+  .content::after{
+    left:9%; height:60px; width:12px;
+    background:linear-gradient(180deg,#2bb37e,#166b46);
+    animation-duration:3.6s;
+    animation-delay:-1.2s;
+  }
+  .website::before{
+    left:80%; height:120px;
+    background:linear-gradient(180deg,#1f9d6b,#0f5132);
+    animation-duration:5.4s;
+    animation-delay:-2s;
+  }
+  .website::after{
+    left:87%; height:70px; width:12px;
+    background:linear-gradient(180deg,#2bb37e,#166b46);
+    animation-duration:4s;
+    animation-delay:-0.6s;
+  }
+  #resultTitle::before{
+    left:94%; height:80px;
+    background:linear-gradient(180deg,#1f9d6b,#0f5132);
+    animation-duration:4.8s;
+    animation-delay:-3s;
+  }
+  #resultText::before{
+    left:15%; height:70px; width:13px;
+    background:linear-gradient(180deg,#2bb37e,#166b46);
+    animation-duration:3.9s;
+    animation-delay:-1.8s;
+  }
+
+  /* ===== JELLYFISH, CORAL & OTHER LIFE ===== */
+  @keyframes jellyDrift{
+    0%,100% { transform:translate(0,0); }
+    50%     { transform:translate(14px,-26px); }
+  }
+  @keyframes pulseGlow{
+    0%,100% { transform:scale(1); opacity:0.55; }
+    50%     { transform:scale(1.18); opacity:0.85; }
+  }
+  @keyframes crawl{
+    0%,100% { transform:translateX(0); }
+    50%     { transform:translateX(40px); }
+  }
+
+  .content h1::before{
+    content:"🪼";
+    position:fixed;
+    top:22%; left:75%;
+    font-size:26px;
+    opacity:0.45;
+    z-index:0;
+    pointer-events:none;
+    animation:jellyDrift 9s ease-in-out infinite;
+  }
+  .content h1::after{
+    content:"🪸";
+    position:fixed;
+    bottom:10px; left:6%;
+    font-size:24px;
+    z-index:0;
+    pointer-events:none;
+    animation:pulseGlow 6s ease-in-out infinite;
+  }
+  .h1::before{
+    content:"🪼";
+    position:fixed;
+    top:60%; left:12%;
+    font-size:22px;
+    opacity:0.4;
+    z-index:0;
+    pointer-events:none;
+    animation:jellyDrift 11s ease-in-out infinite;
+    animation-delay:-4s;
+  }
+  .h1::after{
+    content:"🪸";
+    position:fixed;
+    bottom:8px; left:90%;
+    font-size:26px;
+    z-index:0;
+    pointer-events:none;
+    animation:pulseGlow 7s ease-in-out infinite;
+    animation-delay:-2.5s;
+  }
+  #resultTitle::after{
+    content:"🦀";
+    position:fixed;
+    bottom:6px; left:45%;
     font-size:20px;
+    z-index:0;
+    pointer-events:none;
+    animation:crawl 5s ease-in-out infinite;
+  }
+  #resultText::after{
+    content:"🐢";
+    position:fixed;
+    top:75%; left:-6%;
+    font-size:24px;
+    opacity:0.5;
+    z-index:0;
+    pointer-events:none;
+    animation:swimRight 34s linear infinite;
+    animation-delay:-9s;
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .container{
     display:flex;
-    gap:8px;
+    flex-wrap:wrap;
+    gap:32px;
+    align-items:flex-start;
+    justify-content:center;
+    max-width:1200px;
+    margin:0 auto;
+    padding:56px 24px 90px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ===== LEFT PROFILE CARD ===== */
+  .content{
+    background:var(--card-glass);
+    border:1px solid var(--border-glass);
+    border-radius:var(--radius-lg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.15);
+    width:300px;
+    flex-shrink:0;
+    padding:28px 22px 32px;
+    display:flex;
+    flex-direction:column;
     align-items:center;
-    margin-top: 10px;
-}
-
-/* RIGHT SIDE */
-.website{
-    flex:1;
-    padding:30px;       
-}
-
-.h1{
     text-align:center;
-    font-size:50px;
-    color:#0077be;
-}
+  }
 
-.salom{
+  .content h1{
+    font-size:1.5rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    margin:0 0 20px;
+    color:var(--bio-cyan);
+    text-transform:uppercase;
+  }
+
+  .content-eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:2.5px;
+    color:var(--bio-cyan);
+    text-transform:uppercase;
+  }
+
+  @keyframes floatBob{
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-9px) rotate(1.5deg); }
+  }
+
+  .img{
+    width:112px;
+    height:112px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid var(--bio-cyan);
+    box-shadow:0 0 0 4px rgba(79,227,209,0.18), 0 8px 20px rgba(0,0,0,0.35);
+    margin:0 0 20px;
+    animation: floatBob 5s ease-in-out infinite;
+  }
+
+  .content h3{
+    width:100%;
+    font-size:0.98rem;
+    font-weight:500;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin:0;
+    padding:10px 4px;
+    border-bottom:1px solid var(--border-glass);
+  }
+  .content h3:last-child{ border-bottom:none; }
+
+  /* ===== RIGHT SIDE / APP ===== */
+  .website{
+    flex:1;
+    min-width:320px;
+    max-width:760px;
+    background:var(--card-glass);
+    border:1px solid var(--border-glass);
+    border-radius:var(--radius-lg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:var(--shadow-soft);
+    padding:34px 30px 44px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .h1{
+    text-align:center;
+    font-size:2.6rem;
+    font-weight:800;
+    letter-spacing:0.5px;
+    margin:0 0 22px;
+    background:linear-gradient(90deg, var(--bio-cyan), #7fd8ff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .salom{
     width:100%;
     max-width:900px;
-    border-radius:15px;
+    border-radius:var(--radius-md);
     display:block;
-    margin:auto;    
-}
+    margin:0 auto 26px;
+    box-shadow:0 14px 30px rgba(0,0,0,0.3);
+    animation: floatBob 7s ease-in-out infinite;
+    animation-delay:-1.5s;
+  }
 
-/* INPUT */
-#animalInput{
-    width:60%;
-    padding:15px;
-    font-size:18px;
-    border-radius:10px;
-    border:1px solid #ccc;
-    margin:20px auto;
+  /* ===== INPUT + BUTTON ===== */
+  #animalInput{
+    width:100%;
+    max-width:420px;
+    padding:14px 18px;
+    font-size:16px;
+    font-family:inherit;
+    color:#04283a;
+    border-radius:999px;
+    border:1px solid var(--border-glass);
+    outline:none;
+    margin:0 auto 14px;
     display:block;
-}
-button{
+    background:var(--foam);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,0.08);
+    transition:box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  #animalInput::placeholder{ color:#5b7d8a; }
+  #animalInput:focus{
+    box-shadow:0 0 0 3px rgba(79,227,209,0.55);
+    transform:translateY(-1px);
+  }
+
+  button{
     display:block;
-    margin:10px auto;
-    padding:12px 30px;
+    margin:0 auto;
+    padding:13px 34px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.3px;
     border:none;
-    border-radius:10px;
-    background:#00aaff;
-    color:white;
+    border-radius:999px;
+    background:linear-gradient(135deg, var(--mid-4), var(--bio-cyan));
+    color:#03181f;
     cursor:pointer;
-}
-button:hover{
-    background:#0077be;
-}
-#resultTitle{
+    box-shadow:0 10px 22px rgba(13,110,140,0.45);
+    transition:transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+  button:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:0 14px 28px rgba(13,110,140,0.55);
+  }
+  button:active{ transform:translateY(0); }
+  button:focus-visible{ outline:3px solid var(--coral); outline-offset:3px; }
+
+  /* pufakchalar — qidiruv tugmasi / input hududidan ko'tarilib turadi */
+  button{ position:relative; z-index:1; }
+
+  @keyframes bubbleUp{
+    0%   { transform:translateY(0) scale(0.6); opacity:0; }
+    15%  { opacity:0.9; }
+    85%  { opacity:0.5; }
+    100% { transform:translateY(-160px) scale(1); opacity:0; }
+  }
+
+  button::before,
+  button::after{
+    content:"";
+    position:absolute;
+    bottom:6px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.15));
+    box-shadow:0 0 6px rgba(255,255,255,0.5);
+    pointer-events:none;
+    animation:bubbleUp 3.2s ease-in infinite;
+  }
+  button::before{ left:22%; animation-delay:-0.6s; width:6px; height:6px; }
+  button::after { left:70%; animation-delay:-2s; width:11px; height:11px; }
+
+  /* ===== RESULT ===== */
+  #resultTitle{
     text-align:center;
-    font-size:30px;
-    color:#0077be;
-    margin-top:30px;
-}
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--bio-cyan);
+    margin-top:34px;
+  }
 
-#resultText{
-    width:70%;
-    margin:20px auto;
-    padding:25px;
-    background:white;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  #resultText{
+    width:100%;
+    max-width:560px;
+    margin:18px auto 0;
+    padding:24px 26px;
+    background:var(--foam);
+    color:#183642;
+    border-radius:var(--radius-md);
+    box-shadow:0 12px 28px rgba(0,0,0,0.25);
     line-height:1.8;
-    border-left:6px solid #00aaff;
-}
+    border-left:6px solid var(--bio-cyan);
+  }
 
-#resultImg{
-    width:300px;
-    display:block;
-    margin:20px auto;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-/* sun and ligght */
-  :root {
-    --day-sky-1: #7ec8e3;
-    --day-sky-2: #ffe4a1;
-    --night-sky-1: #0b1026;
-    --night-sky-2: #1b2a4a;
-    --sun-color: #ffb703;
-    --moon-color: #e2e8f0;
+  #resultImg{
+    width:280px;
+    max-width:80%;
+    display:none;
+    margin:24px auto 0;
+    border-radius:var(--radius-md);
+    box-shadow:0 12px 28px rgba(0,0,0,0.3);
+    animation: floatBob 6s ease-in-out infinite;
+    animation-delay:-3s;
+  }
+
+  /* ===== DAY / NIGHT TOGGLE ===== */
+  :root{
+    --sun-color:#ffb703;
+    --moon-color:#e2e8f0;
     --track-shadow: rgba(0,0,0,0.25);
   }
 
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: radial-gradient(circle at 30% 20%, #2b2f45, #14162a 70%);
-    transition: background 0.6s ease;
+  .stage{
+    position:fixed;
+    top:22px;
+    right:26px;
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
   }
 
-  body.day {
-    background: radial-gradient(circle at 30% 20%, #bfe9ff, #7ec8e3 70%);
+  .label{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--foam);
+    opacity:0.85;
+    transition:color 0.6s ease;
+  }
+  body.day .label{ color:#04283a; }
+
+  .toggle{
+    --w:118px;
+    --h:54px;
+    --pad:5px;
+    width:var(--w);
+    height:var(--h);
+    border:none;
+    border-radius:999px;
+    position:relative;
+    cursor:pointer;
+    padding:0;
+    background:linear-gradient(135deg, var(--deep-1), var(--deep-3));
+    box-shadow:inset 0 2px 6px var(--track-shadow), 0 8px 20px rgba(0,0,0,0.4);
+    transition:background 0.6s ease;
+    overflow:hidden;
+  }
+  .toggle.day{
+    background:linear-gradient(135deg, #7ec8e3, #ffe4a1);
   }
 
-  .stage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 28px;
+  .stars{ position:absolute; inset:0; opacity:1; transition:opacity 0.5s ease; }
+  .toggle.day .stars{ opacity:0; }
+  .stars span{
+    position:absolute;
+    width:2px; height:2px;
+    background:#fff;
+    border-radius:50%;
   }
 
-  .label {
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #f5f5f5;
-    opacity: 0.85;
-    transition: color 0.6s ease;
+  .clouds{ position:absolute; inset:0; opacity:0; transition:opacity 0.5s ease; }
+  .toggle.day .clouds{ opacity:1; }
+  .clouds span{
+    position:absolute;
+    background:rgba(255,255,255,0.85);
+    border-radius:999px;
   }
 
-  body.day .label { color: #14162a; }
-
-  .toggle {
-    --w: 140px;
-    --h: 64px;
-    --pad: 6px;
-    width: var(--w);
-    height: var(--h);
-    border: none;
-    border-radius: 999px;
-    position: relative;
-    cursor: pointer;
-    padding: 0;
-    background: linear-gradient(135deg, var(--night-sky-1), var(--night-sky-2));
-    box-shadow: inset 0 2px 6px var(--track-shadow), 0 6px 18px rgba(0,0,0,0.35);
-    transition: background 0.6s ease;
-    overflow: hidden;
+  .knob{
+    position:absolute;
+    top:var(--pad);
+    left:var(--pad);
+    width:calc(var(--h) - var(--pad) * 2);
+    height:calc(var(--h) - var(--pad) * 2);
+    border-radius:50%;
+    background:var(--moon-color);
+    box-shadow:0 3px 8px rgba(0,0,0,0.4), inset -4px -4px 0 rgba(0,0,0,0.08);
+    transition:transform 0.5s cubic-bezier(.68,-0.4,.27,1.4), background 0.5s ease, box-shadow 0.5s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .toggle.day .knob{
+    transform:translateX(calc(var(--w) - var(--h)));
+    background:var(--sun-color);
+    box-shadow:0 0 18px 4px rgba(255,183,3,0.7), inset -3px -3px 0 rgba(255,255,255,0.3);
   }
 
-  .toggle.day {
-    background: linear-gradient(135deg, var(--day-sky-1), var(--day-sky-2));
-  }
- .stars {
-    position: absolute;
-    inset: 0;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-  }
-  .toggle.day .stars { opacity: 0; }
-  .stars span {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: #fff;
-    border-radius: 50%;
+  .knob svg{ width:60%; height:60%; position:absolute; opacity:0; transition:transform 0.5s ease; }
+  .knob svg.moon-icon{ opacity:1; }
+  .toggle.day .knob svg.sun-icon{ opacity:1; transform:rotate(90deg); }
+  .toggle.day .knob svg.moon-icon{ opacity:0; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; }
   }
 
-  .clouds {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+  @media (max-width:720px){
+    .container{ padding:100px 16px 60px; }
+    .content{ width:100%; max-width:340px; }
+    .h1{ font-size:2rem; }
+    .stage{ top:14px; right:14px; transform:scale(0.85); transform-origin:top right; }
   }
-  .toggle.day .clouds { opacity: 1; }
-  .clouds span {
-    position: absolute;
-    background: rgba(255,255,255,0.8);
-    border-radius: 999px;
-  }
-
-  .knob {
-    position: absolute;
-    top: var(--pad);
-    left: var(--pad);
-    width: calc(var(--h) - var(--pad) * 2);
-    height: calc(var(--h) - var(--pad) * 2);
-    border-radius: 50%;
-    background: var(--moon-color);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset -4px -4px 0 rgba(0,0,0,0.08);
-    transition: transform 0.5s cubic-bezier(.68,-0.4,.27,1.4), background 0.5s ease, box-shadow 0.5s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .toggle.day .knob {
-    transform: translateX(calc(var(--w) - var(--h)));
-    background: var(--sun-color);
-    box-shadow: 0 0 18px 4px rgba(255,183,3,0.7), inset -3px -3px 0 rgba(255,255,255,0.3);
-  }
-
-  .knob svg {
-    width: 60%;
-    height: 60%;
-    transition: transform 0.5s ease;
-  }
-
-  .toggle:not(.day) .knob svg.moon-icon { opacity: 1; transform: rotate(0deg); }
-  .toggle:not(.day) .knob svg.sun-icon { opacity: 0; position: absolute; }
-  .toggle.day .knob svg.sun-icon { opacity: 1; transform: rotate(90deg); }
-  .toggle.day .knob svg.moon-icon { opacity: 0; position: absolute; }
-
-  .knob svg { position: absolute; opacity: 0; }
-  .knob svg.moon-icon { opacity: 1; }
 </style>
-  
-
 </head>
 
 <body>
@@ -326,279 +715,7 @@ button:hover{
 </div>
 
 
-</body>
-</html>
-  </div>
 
-<script>
- const database = {
-  shark: {
-    text: `
-🦈 Shark
-
-Description:
-Sharks are powerful predators that help maintain the balance of marine ecosystems. They have existed for over 400 million years and are among the oldest animals on Earth.
-
-Habitat:
-All major oceans, from shallow coastal waters to the deep sea.
-
-Diet:
-Fish, squid, seals, crustaceans, and other marine animals.
-
-Interesting Fact:
-Sharks can detect tiny electrical signals produced by other animals.
-
-Conservation Status:
-Many shark species are endangered because of overfishing.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0mPT3cd6x5EkciZ3G1r8sDNjHKVRmhHzsvtrPngnaBA&s=10"
-  },
-
-  whale: {
-    text: `
-🐋 Whale
-
-Description:
-Whales are the largest animals on Earth. Despite their enormous size, many species are gentle giants that travel thousands of kilometers every year.
-
-Habitat:
-Oceans around the world.
-
-Diet:
-Krill, plankton, fish, or squid depending on the species.
-
-Interesting Fact:
-The blue whale is the largest animal ever known to have lived on Earth.
-
-Conservation Status:
-Several whale species are protected, but some remain endangered.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrgAP3WPiGamjcGNK9AkZLIxkW_A-8mpy5lqWqVnn8mw&s=10"
-  },
-
-  dolphin: {
-    text: `
-🐬 Dolphin
-
-Description:
-The dolphin is one of the most intelligent and friendly marine animals. It lives in groups called pods and communicates using clicks, whistles, and body movements. Dolphins are known for their playful behavior and strong social bonds.
-
-Habitat:
-Warm and temperate oceans and seas around the world.
-
-Diet:
-Fish, squid, octopus, and other small marine animals.
-
-Interesting Fact:
-Each dolphin has its own unique whistle, which works like a personal name.
-
-Conservation Status:
-Some species are threatened by pollution, fishing nets, and habitat loss.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe7Almb8tLV9-3wniP51p4pw3SpSwTNXN9dU37OZ89cA&s=10"
-  },
-
-  jellyfish: {
-    text: `
-🪼 Jellyfish
-
-Description:
-Jellyfish are soft-bodied animals that drift with ocean currents. Their transparent bodies make them one of the most fascinating sea creatures.
-
-Habitat:
-Nearly all oceans, from the surface to the deep sea.
-
-Diet:
-Plankton, fish eggs, and small fish.
-
-Interesting Fact:
-Some jellyfish can glow in the dark through a process called bioluminescence.
-
-Conservation Status:
-Most species have stable populations.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCNZ-82Ze1vYJG5VwtGNUx0ImwkVCdv6kTryRWFl6r0g&s=10"
-  },
-
-  octopus: {
-    text: `
-🐙 Octopus
-
-Description:
-The octopus is one of the smartest invertebrates in the ocean. It has eight flexible arms and can solve simple puzzles and escape from tight spaces.
-
-Habitat:
-Coral reefs, rocky coasts, and the ocean floor.
-
-Diet:
-Crabs, shrimp, fish, and shellfish.
-
-Interesting Fact:
-An octopus can change both its color and skin texture to blend into its surroundings.
-
-Conservation Status:
-Most species are currently stable.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBN6hQ2-iQXl6O8faCBqEJQJWhH0LNaSXH-Jh2oye-qA&s=10"
-  },
-
-  turtle: {
-    text: `
-🐢 Sea Turtle
-
-Description:
-Sea turtles are ancient reptiles that have lived in the oceans for more than 100 million years. They spend most of their lives in the sea and return to beaches to lay eggs.
-
-Habitat:
-Tropical and subtropical oceans.
-
-Diet:
-Seagrass, jellyfish, algae, crabs, and other small marine creatures.
-
-Interesting Fact:
-Female sea turtles often return to the same beach where they were born to lay their eggs.
-
-Conservation Status:
-Most species are classified as threatened or endangered.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROrhGWjCfc39rO221hnvDAD6lLw_C2AFNAgkfc9n80Iw&s=10"
-  },
-
-  crab: {
-    text: `
-🦀 Crab
-
-Description:
-Crabs are crustaceans with hard shells and strong claws. They are important scavengers that help keep the ocean clean.
-
-Habitat:
-Beaches, coral reefs, mangroves, and the ocean floor.
-[7/29/2026 7:37 PM] Fazliddin: Diet:
-Algae, small fish, mollusks, and dead organic matter.
-
-Interesting Fact:
-Crabs shed their shells as they grow, a process called molting.
-
-Conservation Status:
-Most species are common, though some are affected by habitat destruction.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxSaaFhE0jglXnJh8v45I38BhS9flLZcnE-bl4frV-yA&s=10"
-  },
-
-  seahorse: {
-    text: `
-🐴 Seahorse
-
-Description:
-The seahorse is a small and fascinating marine animal known for its horse-like head and upright swimming posture. Unlike most fish, seahorses move slowly and use their curled tails to hold onto seagrass and coral. They are gentle creatures with unique behaviors.
-
-Habitat:
-Shallow tropical and temperate oceans, especially in coral reefs, seagrass beds, and mangrove forests.
-
-Diet:
-Tiny shrimp, plankton, and other small crustaceans.
-
-Interesting Fact:
-Male seahorses are the only animals in the world where the male becomes pregnant. They carry the eggs in a special pouch until the babies are ready to be born.
-
-Conservation Status:
-Many seahorse species are vulnerable due to habitat destruction, pollution, and overfishing. Several species are protected under international conservation agreements.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOhsEGHRhdMBfLEr_u6WzCfO3O-GcLKOPjO9u6gcGiqQ&s=10"
-  },
-
-  starfish: {
-    text: `
-⭐️ Starfish (Sea Star)
-
-Description:
-Starfish are beautiful marine animals with five or more arms. They move slowly across the ocean floor and play an important role in marine ecosystems.
-
-Habitat:
-Coral reefs, rocky shores, and sandy seabeds.
-
-Diet:
-Mollusks, clams, oysters, and organic matter.
-
-Interesting Fact:
-Many starfish can regenerate lost arms.
-
-Conservation Status:
-Most species are not endangered, although habitat damage affects some populations.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQvHQANvqbez2-Ds5Q61k1uis_Kaq-kLlb_0ekH5UsHA&s=10"
-  },
-
-  stingray: {
-    text: `
-🛸 Stingray
-
-Description:
-The stingray is a graceful marine animal with a flat, diamond-shaped body and long, whip-like tail. It glides smoothly across the ocean floor and is usually calm and non-aggressive. Most stingrays avoid humans unless they feel threatened.
-
-Habitat:
-Tropical and temperate oceans, especially along sandy beaches, coral reefs, lagoons, and coastal waters.
-
-Diet:
-Crabs, shrimp, clams, worms, and other small animals that live on the seabed.
-
-Interesting Fact:
-Many stingrays have venomous barbs on their tails that they use only for self-defense. Some species can even bury themselves in the sand to hide from predators.
-
-Conservation Status:
-Several stingray species are vulnerable or endangered due to overfishing, habitat loss, and pollution. Conservation efforts are helping to protect their populations.
-    `,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lEncaC7NtOijU4QTnNebv-x6wCMFhwI5Yq4fWJj1fA&s=10"
-  }
-};
-
-function searchAnimal(){
-  let input = document.getElementById("animalInput").value.toLowerCase();
-
-  let title = document.getElementById("resultTitle");
-  let text = document.getElementById("resultText");
-  let img = document.getElementById("resultImg");
-
-  if(database[input]){
-    title.innerText = input.toUpperCase();
-    text.innerText = database[input].text;
-    img.src = database[input].img;
-    img.style.display = "block";
-  } else {
-    title.innerText = "Not Found ❌";
-    text.innerText = "Try: shark, whale, jellyfish, dolphin, octopus";
-    img.style.display = "none";
-  }
-  title.innerHTML="Searching...";
-  setTimeout(()=>{
-
-
-},1000)
-}
-
-
-// sun and light
- const starsWrap = document.getElementById('stars');
-  for (let i = 0; i < 18; i++) {
-    const s = document.createElement('span');
-    s.style.top = Math.random() * 90 + '%';
-    s.style.left = Math.random() * 90 + '%';
-    s.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
-    starsWrap.appendChild(s);
-  }
-
-  const btn = document.getElementById('toggleBtn');
-  const label = document.getElementById('stateLabel');
-  const body = document.body;
-  let isDay = false;
- btn.addEventListener('click', () => {
-    isDay = !isDay;
-    btn.classList.toggle('day', isDay);
-    body.classList.toggle('day', isDay);
-    btn.setAttribute('aria-pressed', String(isDay));
-    label.textContent = isDay ? 'Kun' : 'Tun';
-  });
-</script>
-
+<script src="/next.js"></script>
 </body>
 </html>
